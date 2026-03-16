@@ -57,11 +57,7 @@ double World::get_gravity() const
 
 Ball &World::get_Ball(size_t index)
 {
-    if (index < 0)
-    {
-        throw std::invalid_argument("Index can't be negative!\n");
-    }
-    else if (index >= balls.size())
+    if (index >= balls.size())
     {
         throw std::invalid_argument("Index is out of range!\n");
     }
@@ -70,11 +66,7 @@ Ball &World::get_Ball(size_t index)
 
 const Ball &World::get_Ball(size_t index) const
 {
-    if (index < 0)
-    {
-        throw std::invalid_argument("Index can't be negative!\n");
-    }
-    else if (index >= balls.size())
+    if (index >= balls.size())
     {
         throw std::invalid_argument("Index is out of range!\n");
     }
@@ -83,11 +75,7 @@ const Ball &World::get_Ball(size_t index) const
 
 std::span<Ball> World::get_Balls(size_t start, size_t end)
 {
-    if (start < 0 || end < 0)
-    {
-        throw std::invalid_argument("Start or end can't be negative!\n");
-    }
-    else if (start > end)
+    if (start > end)
     {
         throw std::invalid_argument("End can't be smaller than start!\n");
     }
@@ -100,11 +88,7 @@ std::span<Ball> World::get_Balls(size_t start, size_t end)
 
 std::span<const Ball> World::get_Balls(size_t start, size_t end) const
 {
-    if (start < 0 || end < 0)
-    {
-        throw std::invalid_argument("Start or end can't be negative!\n");
-    }
-    else if (end < start)
+    if (end < start)
     {
         throw std::invalid_argument("End can't be smaller than start!\n");
     }

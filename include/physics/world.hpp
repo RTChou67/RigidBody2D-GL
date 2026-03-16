@@ -1,6 +1,7 @@
 #pragma once
 #include "physics/ball.hpp"
 #include <vector>
+#include <span>
 
 class World
 {
@@ -24,4 +25,12 @@ public:
     void add_Ball(Ball &&b);
     void add_Balls(std::vector<Ball> &&bs);
     void set_dt(double s = 0.01);
+    // Getters
+    double get_width() const;
+    double get_height() const;
+    double get_gravity() const;
+    Ball &get_Ball(size_t index);
+    const Ball &get_Ball(size_t index) const;
+    std::span<Ball> get_Balls(size_t start, size_t end);
+    std::span<const Ball> get_Balls(size_t start, size_t end) const;
 };

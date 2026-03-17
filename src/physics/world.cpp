@@ -1,4 +1,5 @@
 #include "physics/world.hpp"
+#include "physics/vec2.hpp"
 #include <stdexcept>
 #include <iterator>
 #include <utility>
@@ -10,13 +11,26 @@ void World::set_size(double x, double y)
     {
         throw std::invalid_argument("x and y must be positive!\n");
     }
-    width = x;
-    height = y;
+    world_size = {x, y};
 }
 
-void World::set_gravity(double g)
+void World::set_size(const vec2 &world_size_in)
 {
-    gravity_y = g;
+    if (world_size_in.x <= 0 || world_size_in.y <= 0)
+    {
+        throw std::invalid_argument("x and y must be positive!\n");
+    }
+    world_size = world_size_in;
+}
+
+void World::set_gravity(double gx, double gy)
+{
+    gravity = {gx, gy};
+}
+
+void World::set_gravity(const vec2 &g)
+{
+    gravity = g;
 }
 
 void World::add_Ball(Ball &&b)
@@ -40,19 +54,14 @@ void World::set_dt(double s)
 }
 
 // Getters
-double World::get_width() const
+const vec2 &World::get_size() const
 {
-    return width;
+    return world_size;
 }
 
-double World::get_height() const
+const vec2 &World::get_gravity() const
 {
-    return height;
-}
-
-double World::get_gravity() const
-{
-    return gravity_y;
+    return gravity;
 }
 
 Ball &World::get_Ball(size_t index)
@@ -103,8 +112,7 @@ void World::step()
 {
     for (auto &each_ball : balls)
     {
-        each_ball.set_velocity(each_ball.get_velocity().x, each_ball.get_velocity().y - gravity_y * dt);
-        each_ball.set_position(each_ball.get_position().x + each_ball.get_velocity().x * dt,
-                               each_ball.get_position().y + each_ball.get_velocity().y * dt);
+        each_ball.set_velocity(each_ball.get_velocity() + gravity * dt);
+        each_ball.set_position(each_ball.get_position() + each_ball.get_velocity() * dt);
     }
 }

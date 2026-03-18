@@ -4,6 +4,7 @@
 #include <iterator>
 #include <utility>
 #include <span>
+#include <cmath>
 
 void World::set_size(double x, double y)
 {
@@ -114,5 +115,56 @@ void World::step()
     {
         each_ball.set_velocity(each_ball.get_velocity() + gravity * dt);
         each_ball.set_position(each_ball.get_position() + each_ball.get_velocity() * dt);
+    }
+}
+
+void World::collision_detect()
+{
+    // Sort by x - r
+    std::sort(balls.begin(), balls.end(), [](const Ball &a, const Ball &b)
+              { return (a.get_position().x - a.get_size()) < (b.get_position().x - b.get_size()); });
+    size_t index = 0;
+    for (auto &each_ball : balls)
+    {
+        index++;
+        for (auto &the_other : std::span(balls).subspan(index, balls.size() - index))
+        {
+            // x_1 + r_1 < x_2 - r_2
+            // In a sorted ball list, there will be no more collided ball after first uncollided ball
+            // So break after first uncollided ball
+            if (each_ball.get_position().x + each_ball.get_size() < the_other.get_position().x - the_other.get_size())
+            {
+                break;
+            }
+            // Check y-axis gap if x-aixs is potentially colliding
+            // Continue to skip next criteria when the gap of y is larger than the sum of radius
+            if (std::fabs(each_ball.get_position().y - the_other.get_position().y) > each_ball.get_size() + the_other.get_size())
+            {
+                continue;
+            }
+            // Compute a precise distance
+            // (x_1 - x_2) ** 2 + (y_1 - y_2) ** 2 = (r_1 + r_2) ** 2
+            if (sqr(each_ball.get_position().x - the_other.get_position().x) + (sqr(each_ball.get_position().y - the_other.get_position().y)) <= sqr(each_ball.get_size() + the_other.get_size()))
+            {
+                // Update velocity
+            }
+        }
+        // Wall detection
+        if (each_ball.get_position().x - each_ball.get_size() < 0)
+        {
+            // Update velocity
+        }
+        if (each_ball.get_position().x + each_ball.get_size() > world_size.x)
+        {
+            /* code */
+        }
+        if (each_ball.get_position().y - each_ball.get_size() < 0)
+        {
+            /* code */
+        }
+        if (each_ball.get_position().y + each_ball.get_size() > world_size.y)
+        {
+            /* code */
+        }
     }
 }

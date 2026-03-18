@@ -4,6 +4,13 @@
 #include <vector>
 #include <span>
 
+// Template for x square
+template <typename T>
+T sqr(T x)
+{
+    return x * x;
+}
+
 class World
 {
 private:
@@ -36,4 +43,6 @@ public:
     std::span<const Ball> get_Balls(size_t start, size_t end) const;
     // Trace compute step by step
     void step();
+    // Collision detect
+    void collision_detect();
 };

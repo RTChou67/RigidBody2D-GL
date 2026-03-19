@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 
 struct vec2
 {
@@ -40,5 +41,16 @@ struct vec2
     double dot(const vec2 &other) const
     {
         return x * other.x + y * other.y;
+    }
+    void normalize()
+    {
+        double L2 = std::sqrt(x * x + y * y);
+        x = x / L2;
+        y = y / L2;
+    }
+    vec2 normalized() const
+    {
+        double L2 = std::sqrt(x * x + y * y);
+        return vec2{x / L2, y / L2};
     }
 };

@@ -146,25 +146,55 @@ void World::collision_detect()
             // (x_1 - x_2) ** 2 + (y_1 - y_2) ** 2 = (r_1 + r_2) ** 2
             if (sqr(each_ball.get_position().x - the_other.get_position().x) + (sqr(each_ball.get_position().y - the_other.get_position().y)) <= sqr(each_ball.get_size() + the_other.get_size()))
             {
-                // Update velocity
+                update_velocity(each_ball, the_other);
             }
         }
         // Wall detection
+        // Take the opposite velocity on the collided axis when the ball collide with the wall
         if (each_ball.get_position().x - each_ball.get_size() < 0)
         {
-            // Update velocity
+            each_ball.set_velocity(-each_ball.get_velocity().x, each_ball.get_velocity().y);
         }
         if (each_ball.get_position().x + each_ball.get_size() > world_size.x)
         {
-            /* code */
+            each_ball.set_velocity(-each_ball.get_velocity().x, each_ball.get_velocity().y);
         }
         if (each_ball.get_position().y - each_ball.get_size() < 0)
         {
-            /* code */
+            each_ball.set_velocity(each_ball.get_velocity().x, -each_ball.get_velocity().y);
         }
         if (each_ball.get_position().y + each_ball.get_size() > world_size.y)
         {
-            /* code */
+            each_ball.set_velocity(each_ball.get_velocity().x, -each_ball.get_velocity().y);
         }
     }
+}
+
+void World::update_velocity(Ball &ball_1, Ball &ball_2)
+{
+    // Note: This function won't check the validation of inputs, so don't use it without checking
+    // Saclarization
+    // Get normal vector between two balls
+    const vec2 normal_vector = (ball_1.get_position() - ball_2.get_position()).normalized();
+
+    // Velocity on normal direction
+    const auto v1_i_normal = ball_1.get_velocity().dot(normal_vector);
+    const auto v2_i_normal = ball_2.get_velocity().dot(normal_vector);
+
+    // Get the velocity after collision
+    // (m_1 * v1_i + m_2 * v2_i + C_r * m_2 * (v2_i - v1_i)) / (m_1 + m_2) and vice versa
+    const auto v1_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal + restitution * ball_2.get_mass() * (v2_i_normal - v1_i_normal)) / (ball_1.get_mass() + ball_2.get_mass());
+    const auto v2_f_normal = (ball_1.get_mass() * v1_i_normal + ball_2.get_mass() * v2_i_normal + restitution * ball_1.get_mass() * (v1_i_normal - v2_i_normal)) / (ball_1.get_mass() + ball_2.get_mass());
+
+    // Compute the difference between v1_f and v2_f
+    const auto diff_of_1 = v1_f_normal - v1_i_normal;
+    const auto diff_of_2 = v2_f_normal - v2_i_normal;
+
+    // Vectorization
+    const auto vec_diff_of_1 = diff_of_1 * normal_vector;
+    const auto vec_diff_of_2 = diff_of_2 * normal_vector;
+
+    // Update velocity
+    ball_1.set_velocity(ball_1.get_velocity() - vec_diff_of_1);
+    ball_2.set_velocity(ball_2.get_velocity() - vec_diff_of_2);
 }

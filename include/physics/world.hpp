@@ -22,10 +22,14 @@ private:
     std::vector<Ball> balls;
     // Step length
     double dt;
+    // Coefficient of restitution
+    double restitution;
+    // Private Methods
+    void update_velocity(Ball &ball_1, Ball &ball_2);
 
 public:
     // Constructor
-    World() : dt(0.01) {}
+    World() : dt(0.01), restitution(1) {}
     // Setters
     void set_size(double x = 1, double y = 1);
     void set_size(const vec2 &world_size_in);

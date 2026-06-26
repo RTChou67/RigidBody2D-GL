@@ -243,8 +243,8 @@ void World::update_velocity(Ball &ball_1, Ball &ball_2)
     const auto vec_diff_of_2 = diff_of_2 * normal_vector;
 
     // Update velocity
-    ball_1.set_velocity(ball_1.get_velocity() - vec_diff_of_1);
-    ball_2.set_velocity(ball_2.get_velocity() - vec_diff_of_2);
+    ball_1.set_velocity(ball_1.get_velocity() + vec_diff_of_1);
+    ball_2.set_velocity(ball_2.get_velocity() + vec_diff_of_2);
 }
 
 void World::print_state()
